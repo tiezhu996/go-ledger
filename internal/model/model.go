@@ -48,7 +48,9 @@ func BuildPages(txns []*Transaction, size int) [][]*Transaction {
 		if end > len(txns) {
 			end = len(txns)
 		}
-		out = append(out, txns[i:end])
+		p := make([]*Transaction, end-i)
+		copy(p, txns[i:end])
+		out = append(out, p)
 	}
 	return out
 }
