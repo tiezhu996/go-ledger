@@ -2,6 +2,7 @@ package store
 
 import (
 	"errors"
+	"fmt"
 	"sync"
 
 	"ledger/internal/model"
@@ -44,7 +45,7 @@ func (s *Store) GetAccount(id string) (*model.Account, error) {
 	defer s.mu.RUnlock()
 	a, ok := s.accounts[id]
 	if !ok {
-		return nil, ErrAccountNotFound
+		return nil, fmt.Errorf("account %s not found", id)
 	}
 	return a, nil
 }
@@ -72,7 +73,7 @@ func (s *Store) Transfer(from, to string, amount int64) error {
 		return ErrAccountNotFound
 	}
 	if f.Balance < amount {
-		return ErrInsufficientFunds
+		return fmt.Errorf("insufficient funds for %s", from)
 	}
 	f.Balance -= amount
 	t.Balance += amount

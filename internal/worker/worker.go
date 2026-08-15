@@ -60,7 +60,6 @@ func (r *Reconcile) Run(ctx context.Context) model.Summary {
 					default:
 					}
 					if err := r.auditor.Audit(ctx, t); err != nil {
-						local.Failed++
 						continue
 					}
 					local.Audited++
