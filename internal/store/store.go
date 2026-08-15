@@ -103,9 +103,7 @@ func (s *Store) ListTransactions() []*model.Transaction {
 func (s *Store) OrderIDs() []string {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	out := make([]string, len(s.order))
-	copy(out, s.order)
-	return out
+	return s.order
 }
 
 func (s *Store) Balance(id string) (int64, error) {
