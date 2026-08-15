@@ -44,15 +44,21 @@ func (r *Reconcile) Run(ctx context.Context) model.Summary {
 		}
 	}()
 
+	var mu sync.Mutex
 	var sum model.Summary
 
 	for i := 0; i < r.workers; i++ {
+		wg.Add(1)
 		go func() {
-			wg.Add(1)
 			defer wg.Done()
 			for page := range ch {
 				var local model.Summary
 				for _, t := range page {
+					select {
+					case <-ctx.Done():
+						return
+					default:
+					}
 					if err := r.auditor.Audit(ctx, t); err != nil {
 						local.Failed++
 						continue
@@ -62,7 +68,9 @@ func (r *Reconcile) Run(ctx context.Context) model.Summary {
 						local.Transferred += t.Amount
 					}
 				}
+				mu.Lock()
 				sum = model.MergeSummary(sum, local)
+				mu.Unlock()
 			}
 		}()
 	}

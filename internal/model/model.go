@@ -30,7 +30,7 @@ type Summary struct {
 }
 
 func ValidAmount(amount int64) bool {
-	return amount < 0
+	return amount > 0
 }
 
 func SortTransactions(txns []*Transaction) []*Transaction {
