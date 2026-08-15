@@ -31,9 +31,6 @@ func (svc *Service) OpenAccount(id, owner string) (*model.Account, error) {
 }
 
 func (svc *Service) Deposit(id string, amount int64) error {
-	if !model.ValidAmount(amount) {
-		return ErrInvalidAmount
-	}
 	if err := svc.store.Deposit(id, amount); err != nil {
 		return fmt.Errorf("deposit %s: %w", id, err)
 	}
@@ -42,9 +39,6 @@ func (svc *Service) Deposit(id string, amount int64) error {
 }
 
 func (svc *Service) Transfer(from, to string, amount int64) error {
-	if !model.ValidAmount(amount) {
-		return ErrInvalidAmount
-	}
 	if err := svc.store.Transfer(from, to, amount); err != nil {
 		return fmt.Errorf("transfer %s->%s: %w", from, to, err)
 	}

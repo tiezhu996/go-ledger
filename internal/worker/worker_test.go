@@ -2,6 +2,7 @@ package worker
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"ledger/internal/model"
@@ -49,5 +50,30 @@ func TestReconcileCancel(t *testing.T) {
 	sum := r.Run(ctx)
 	if sum.Audited != 0 {
 		t.Fatalf("Audited=%d want 0 (cancelled before run)", sum.Audited)
+	}
+}
+
+type failingAuditor struct{ failID string }
+
+func (f failingAuditor) Audit(ctx context.Context, t *model.Transaction) error {
+	if t.ID == f.failID {
+		return fmt.Errorf("fail %s", t.ID)
+	}
+	return nil
+}
+
+func TestReconcileFailed(t *testing.T) {
+	st := store.New()
+	svc := service.New(st, 2)
+	_, _ = svc.OpenAccount("a", "alice")
+	_ = svc.Deposit("a", 100)
+	_ = svc.Deposit("a", 200)
+	r := New(st, svc, failingAuditor{"d-a-100"}, 2)
+	sum := r.Run(context.Background())
+	if sum.Failed != 1 {
+		t.Fatalf("Failed=%d want 1", sum.Failed)
+	}
+	if sum.Audited != 1 {
+		t.Fatalf("Audited=%d want 1", sum.Audited)
 	}
 }

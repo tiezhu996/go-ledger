@@ -50,8 +50,6 @@ func (s *Store) GetAccount(id string) (*model.Account, error) {
 }
 
 func (s *Store) Deposit(id string, amount int64) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
 	a, ok := s.accounts[id]
 	if !ok {
 		return ErrAccountNotFound
@@ -61,8 +59,6 @@ func (s *Store) Deposit(id string, amount int64) error {
 }
 
 func (s *Store) Transfer(from, to string, amount int64) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
 	f, ok := s.accounts[from]
 	if !ok {
 		return ErrAccountNotFound
