@@ -38,6 +38,7 @@ func (r *Reconcile) Run(ctx context.Context) model.Summary {
 		for _, p := range pages {
 			select {
 			case <-ctx.Done():
+				close(ch)
 				return
 			case ch <- p:
 			}
