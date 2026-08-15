@@ -24,6 +24,7 @@ type Store struct {
 func New() *Store {
 	return &Store{
 		accounts: make(map[string]*model.Account),
+		txns:     make(map[string]*model.Transaction),
 		order:    []string{},
 	}
 }
