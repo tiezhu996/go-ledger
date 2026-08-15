@@ -57,6 +57,7 @@ func BuildPages(txns []*Transaction, size int) [][]*Transaction {
 
 func MergeSummary(dst Summary, src Summary) Summary {
 	dst.Audited += src.Audited
+	dst.Failed += src.Failed
 	dst.Transferred += src.Transferred
 	return dst
 }
