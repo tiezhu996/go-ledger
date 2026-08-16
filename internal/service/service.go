@@ -70,13 +70,5 @@ func (svc *Service) Balance(id string) (int64, error) {
 func (svc *Service) ListPages() [][]*model.Transaction {
 	txns := svc.store.ListTransactions()
 	model.SortTransactions(txns)
-	out := make([][]*model.Transaction, 0)
-	for i := 0; i < len(txns); i += svc.pageSize {
-		end := i + svc.pageSize
-		if end > len(txns) {
-			end = len(txns)
-		}
-		out = append(out, txns[i:end])
-	}
-	return out
+	return model.BuildPages(txns, svc.pageSize)
 }

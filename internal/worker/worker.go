@@ -52,7 +52,6 @@ func (r *Reconcile) Run(ctx context.Context) model.Summary {
 		go func() {
 			defer wg.Done()
 			for page := range ch {
-				page = page[:len(page)-1]
 				var local model.Summary
 				for _, t := range page {
 					select {

@@ -48,7 +48,11 @@ func BuildPages(txns []*Transaction, size int) [][]*Transaction {
 		if end > len(txns) {
 			end = len(txns)
 		}
-		out = append(out, txns[i:end])
+		// Copy each page so callers can mutate a page without corrupting
+		// sibling pages that would otherwise share the same backing array.
+		page := make([]*Transaction, end-i)
+		copy(page, txns[i:end])
+		out = append(out, page)
 	}
 	return out
 }
